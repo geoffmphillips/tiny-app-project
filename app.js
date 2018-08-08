@@ -60,6 +60,12 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/login", (req, res) => {
+  let cookieName = req.body.name;
+  res.cookie("username", cookieName);
+  res.redirect("/urls");
+});
+
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
   delete urlDatabase[shortUrl];
