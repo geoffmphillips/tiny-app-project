@@ -1,8 +1,13 @@
 <h3>Sterns & Caulfield - Hand-crafted URL Shortening</h3>
 
+<% if (!username) { %>
 <form action="/login" method="POST">
-  <label for="name">Username: </label> <input id="name" type="text" name="name" placeholder="Enter your name :D" style="width: 300px">
+  <input id="name" type="text" name="name" placeholder="Enter your username" style="width: 300px">
   <input type="submit" value="Sign In">
 </form>
-
-<h6> <% if (username) { %>Logged in as: <%= username %> <% } %></h6>
+<% } else { %>
+  <form action="/login" method="POST">
+    <label for="name">Logged in as: </label> <input id="name" type="text" name="name" placeholder="<%= username %>" style="width: 300px">
+    <input type="submit" value="Log Out">
+  </form>
+<% } %>
