@@ -11,16 +11,15 @@
   <body>
     <ul>
       <% for (let url in urls) { %>
-      <li>
         <form method="POST" action="/urls/<%= url %>/delete"><%= urls[url] %> &rarr; <%= url %> <a href="/urls/<%= url %>/">Edit</a>
           <input type="submit" value="Delete">
         </form>
-      </li>
       <% } %>
     </ul>
   </body>
 
   <footer>
+    <a href="/urls/new">Shorten a new URL!</a>
     <% include ./partials/_footer %>
   </footer>
 </html>
