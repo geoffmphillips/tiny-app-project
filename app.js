@@ -44,7 +44,7 @@ app.get("/urls/new", (req, res) => {
   templateVars = {
     username: req.cookies.username
   }
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -71,6 +71,16 @@ app.post("/urls/:id", (req, res) => {
 // Creates unsigned cookie with property "username" === their form input
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.name);
+  res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.name);
+  res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username", req.cookies);
   res.redirect("/urls");
 });
 
