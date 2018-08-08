@@ -3,7 +3,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const generateRandomString = require("./generateRandomString");
 const PORT = 8080;
-const httpChecker = require("./httpChecker")
+const httpChecker = require("./httpChecker");
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -14,19 +17,14 @@ const urlDatabase = {
 
 const stringLength = 6;  // String length when generating random string
 
-
 app.get("/", (req, res) => {
   res.redirect("/urls");
-});
-
-app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
 });
 
 app.get("/urls", (req, res) => {
   let templateVars =  {
     urls: urlDatabase,
-    // username: req.cookies["username"]
+    username: req.cookies.username
    };
   res.render("urls_index", templateVars);
 });
@@ -42,12 +40,20 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
+app.get("/urls/new", (req, res) => {
+  templateVars = {
+    username: req.cookies.username
+  }
+  res.render("urls_new");
+});
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortUrl: req.params.id,
     longUrl: urlDatabase[req.params.id],
-    // username: req.cookies["username"]
+    username: req.cookies.username
   };
+
   res.render("urls_show", templateVars);
 });
 
@@ -62,9 +68,9 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+// Creates unsigned cookie with property "username" === their form input
 app.post("/login", (req, res) => {
-  let cookieName = req.body.name;
-  res.cookie("username", cookieName);
+  res.cookie("username", req.body.name);
   res.redirect("/urls");
 });
 
