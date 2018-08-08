@@ -10,9 +10,9 @@
   </header>
 
   <body style="font-size:20px; padding:50px;">
-    <h4>Shortened URL: <%= shortURL %></h4>
-    <form action="/urls/<%= shortURL %>" method="POST">
-      <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
+    <h4>Shortened URL: <%= shortUrl %></h4>
+    <form action="/urls/<%= shortUrl %>" method="POST">
+      <input id="longUrl" type="text" name="longUrl" placeholder="<%= longUrl %>" style="width: 300px">
       <input type="submit" value="Update">
     </form>
   </body>

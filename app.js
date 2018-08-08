@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const generateRandomString = require('./generateRandomString');
-const PORT = 8080; // default port 8080
+const generateRandomString = require("./generateRandomString");
+const PORT = 8080;
+const httpChecker = require("./httpChecker")
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -30,14 +31,13 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// Checks if user entered url beings with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
-  // Checks if valid URL has been entered by user
-  if (req.body.longURL.slice(0,7) !== "http://") {
-    return res.end("Please enter valid url starting with 'http://'.");
-  }
-  // Creates shortened URL and adds key-value pair to urlDatabase
-  let newUrl = generateRandomString(6);
-  urlDatabase[newUrl] = req.body.longURL;
+  let newLongUrl = req.body.longURL;
+  httpChecker(newLongUrl);
+
+  let newShortUrl = generateRandomString(stringLength);
+  urlDatabase[newShortUrl] = newLongUrl;
 
   res.redirect(`/urls/${newUrl}`);
 });
