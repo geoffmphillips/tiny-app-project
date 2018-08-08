@@ -1,22 +1,20 @@
-<!-- urls_show.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
+    <% include ./partials/_head %>
+  </head>
 
-  <% include ./partials/_head %>
+  <header>
+    <% include ./partials/_header %>
+  </header>
 
-</head>
+  <body>
+    <h1><%= longURL %></h1>
+    <h1><%= shortURL %></h1>
+  </body>
 
-<body>
-  <h1><%= longURL %></h1>
-  <h1><%= shortURL %></h1>
-</body>
-
-<footer>
-
-  <% include ./partials/_footer %>
-
-</footer>
-
+  <footer>
+    <% include ./partials/_footer %>
+  </footer>
 </html>

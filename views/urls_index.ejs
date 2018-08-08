@@ -1,24 +1,26 @@
-<!-- urls_index.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
+    <% include ./partials/_head %>
+  </head>
 
-  <% include ./partials/_head %>
+  <header>
+    <% include ./partials/_header %>
+  </header>
 
-</head>
+  <body>
+    <ul>
+      <% for (let url in urls) { %>
+      <li>
+        <form method="POST" action="<% delete urls.url %>"><%= urls[url] %> (<%= url %>)
+          <input type="submit" value="Delete">
+        </form>
+      </li>
+      <% } %>
+    </ul>
+  </body>
 
-<body>
-  <ul>
-    <% for (let url in urls) { %>
-    <li>URL: <%= urls[url] %></li>
-    <% } %>
-  </ul>
-</body>
-
-<footer>
-
-  <% include ./partials/_footer %>
-
-</footer>
-
+  <footer>
+    <% include ./partials/_footer %>
+  </footer>
 </html>
