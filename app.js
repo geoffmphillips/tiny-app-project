@@ -12,11 +12,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const stringLength = 6;
+const stringLength = 6;  // String length when generating random string
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}!`);
-});
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -27,7 +24,10 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars =  { urls: urlDatabase };
+  let templateVars =  {
+    urls: urlDatabase,
+    // username: req.cookies["username"]
+   };
   res.render("urls_index", templateVars);
 });
 
@@ -45,11 +45,13 @@ app.post("/urls", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortUrl: req.params.id,
-    longUrl: urlDatabase[req.params.id]
+    longUrl: urlDatabase[req.params.id],
+    // username: req.cookies["username"]
   };
   res.render("urls_show", templateVars);
 });
 
+// When update button is clicked, creates a new shortUrl, and "updates" the shortUrl by deleting the old key-value pair and adding a new key-value pair
 app.post("/urls/:id", (req, res) => {
   let oldShortUrl = req.params.id;
   let longUrl = urlDatabase[oldShortUrl];
@@ -66,6 +68,7 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+// Deletes key-value pair from urlDatabase
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
   delete urlDatabase[shortUrl];
@@ -79,4 +82,8 @@ app.get("/u/:shortUrl", (req, res) => {
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
+});
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}!`);
 });
