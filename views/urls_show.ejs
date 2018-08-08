@@ -9,7 +9,7 @@
     <% include ./partials/_header %>
   </header>
 
-  <body>
+  <body style="font-size:20px; padding:50px;">
     <h4>Shortened URL: <%= shortURL %></h4>
     <form action="/urls/<%= shortURL %>" method="POST">
       <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
@@ -18,6 +18,7 @@
   </body>
 
   <footer>
+    <a href="/urls">See full list of shortened URLs</a>
     <% include ./partials/_footer %>
   </footer>
 </html>

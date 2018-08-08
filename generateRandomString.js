@@ -1,9 +1,9 @@
 function generateRandomString(stringLength) {
   let output = "";
   let chars = "ABCDEFGHIJKLMNOPQRSTUVWYXZabcdefghijklmnopqrstuvwyxz0123456789";
-  let randomIndex = Math.floor(Math.random() * chars.length);
 
   for (let i = 0; i < stringLength; i++) {
+    let randomIndex = Math.floor(Math.random() * chars.length);
     output += chars[randomIndex];
   }
   return output;
