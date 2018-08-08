@@ -10,11 +10,16 @@
 
   <body>
     <ul>
-      <% for (let url in urls) { %>
-        <form method="POST" action="/urls/<%= url %>/delete"><%= urls[url] %> &rarr; <%= url %> <a href="/urls/<%= url %>/">Edit</a>
-          <input type="submit" value="Delete">
-        </form>
-      <% } %>
+      <table>
+        <% for (let url in urls) { %>
+          <tr>
+            <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <%= urls[url] %></td>
+            <td><a href="/urls/<%= url %>/"><strong>Edit</strong></a></td>
+            <td><input type="submit" value="Delete"></td>
+            </form>
+          </tr>
+        <% } %>
+      </table>
     </ul>
   </body>
 

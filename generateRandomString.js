@@ -1,8 +1,10 @@
 function generateRandomString(stringLength) {
   let output = "";
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWYXZabcdefghijklmnopqrstuvwyxz0123456789";
+  let randomIndex = Math.floor(Math.random() * chars.length);
 
   for (let i = 0; i < stringLength; i++) {
-    output += Math.random().toString(36)[5];
+    output += chars[randomIndex];
   }
   return output;
 }

@@ -11,6 +11,12 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const stringLength = 6;
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}!`);
+});
+
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
@@ -25,11 +31,14 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  let newUrl = generateRandomString(6);
-  urlDatabase[newUrl] = req.body.longURL;
-  if (urlDatabase[newUrl].slice(0,7) !== "http://") {
+  // Checks if valid URL has been entered by user
+  if (req.body.longURL.slice(0,7) !== "http://") {
     return res.end("Please enter valid url starting with 'http://'.");
   }
+  // Creates shortened URL and adds key-value pair to urlDatabase
+  let newUrl = generateRandomString(6);
+  urlDatabase[newUrl] = req.body.longURL;
+
   res.redirect(`/urls/${newUrl}`);
 });
 
@@ -42,7 +51,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls:id", (req, res) => {
-  
+
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -58,8 +67,4 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
-});
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
 });
