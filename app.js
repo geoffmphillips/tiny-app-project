@@ -33,19 +33,19 @@ app.get("/urls", (req, res) => {
 
 // Checks if user entered url beings with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
-  let newLongUrl = req.body.longURL;
-  httpChecker(newLongUrl);
+  let newLongUrl = req.body.longUrl;
+  httpChecker(newLongUrl.slice(0, 7), res);
 
   let newShortUrl = generateRandomString(stringLength);
   urlDatabase[newShortUrl] = newLongUrl;
 
-  res.redirect(`/urls/${newUrl}`);
+  res.redirect(`/urls/${newShortUrl}`);
 });
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id]
+    shortUrl: req.params.id,
+    longUrl: urlDatabase[req.params.id]
   };
   res.render("urls_show", templateVars);
 });
@@ -55,14 +55,14 @@ app.post("/urls:id", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let shortURL = req.params.id;
-  delete urlDatabase[shortURL];
+  let shortUrl = req.params.id;
+  delete urlDatabase[shortUrl];
   res.redirect("/urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+  let longUrl = urlDatabase[req.params.shortURL];
+  res.redirect(longUrl);
 });
 
 app.get("/urls.json", (req, res) => {

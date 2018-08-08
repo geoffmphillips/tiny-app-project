@@ -1,6 +1,6 @@
-function httpChecker(http) {
+function httpChecker(http, response) {
   if (http !== "http://") {
-    return res.end("Please enter valid url starting with 'http://'.");
+    return response.end("Please enter valid url starting with 'http://'.");
   }
 }
 
