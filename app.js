@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const generateRandomString = require("./generateRandomString");
+const generateRandomString = require("./modules/generateRandomString");
 const PORT = 8080;
-const httpChecker = require("./httpChecker");
+const httpChecker = require("./modules/httpChecker");
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
@@ -15,7 +15,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const stringLength = 6;  // String length when generating random string
+const randonStringLength = 6;
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -29,12 +29,12 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// Checks if user entered url beings with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
+// Checks if user entered url beginning with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
   let newLongUrl = req.body.longUrl;
   httpChecker(newLongUrl.slice(0, 7), res);
 
-  let newShortUrl = generateRandomString(stringLength);
+  let newShortUrl = generateRandomString(randonStringLength);
   urlDatabase[newShortUrl] = newLongUrl;
 
   res.redirect(`/urls/${newShortUrl}`);
@@ -44,7 +44,7 @@ app.get("/urls/new", (req, res) => {
   templateVars = {
     username: req.cookies.username
   }
-  res.render("urls_new", templateVars);
+  res.render("urls_new");
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -71,16 +71,6 @@ app.post("/urls/:id", (req, res) => {
 // Creates unsigned cookie with property "username" === their form input
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.name);
-  res.redirect("/urls");
-});
-
-app.post("/login", (req, res) => {
-  res.cookie("username", req.body.name);
-  res.redirect("/urls");
-});
-
-app.post("/logout", (req, res) => {
-  res.clearCookie("username", req.cookies);
   res.redirect("/urls");
 });
 
