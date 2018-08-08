@@ -10,8 +10,11 @@
   </header>
 
   <body>
-    <h1><%= longURL %></h1>
-    <h1><%= shortURL %></h1>
+    <h4>Shortened URL: <%= shortURL %></h4>
+    <form action="/urls/<%= shortURL %>" method="POST">
+      <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
+      <input type="submit" value="Update">
+    </form>
   </body>
 
   <footer>

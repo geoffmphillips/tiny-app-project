@@ -27,10 +27,16 @@ app.get("/urls", (req, res) => {
 app.post("/urls", (req, res) => {
   let newUrl = generateRandomString(6);
   urlDatabase[newUrl] = req.body.longURL;
-  // if (urlDatabase[newUrl].slice(0,7) !== "http://") {
-  //   return res.end("Please enter valid url starting with 'http://'.");
-  // }
+  if (urlDatabase[newUrl].slice(0,7) !== "http://") {
+    return res.end("Please enter valid url starting with 'http://'.");
+  }
   res.redirect(`/urls/${newUrl}`);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  let shortURL = req.params.id;
+  delete urlDatabase[shortURL];
+  res.redirect("/urls");
 });
 
 app.get("/urls/:id", (req, res) => {
