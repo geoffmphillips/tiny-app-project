@@ -15,7 +15,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const randonStringLength = 6;
+const randomStringLength = 6;
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -31,11 +31,13 @@ app.get("/urls", (req, res) => {
 
 // Checks if user entered url beginning with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
-  let newLongUrl = req.body.longUrl;
-  httpChecker(newLongUrl.slice(0, 7), res);
+  // httpChecker(req.body.longUrl.slice(0, 7), res);
 
-  let newShortUrl = generateRandomString(randonStringLength);
-  urlDatabase[newShortUrl] = newLongUrl;
+  if (req.body.longUrl.slice(0, 7) !== "http://") {
+    return res.end("Please enter a url starting with 'http://'.");
+  }
+  let newShortUrl = generateRandomString(randomStringLength);
+  urlDatabase[newShortUrl] = req.body.longUrl;
 
   res.redirect(`/urls/${newShortUrl}`);
 });
@@ -44,7 +46,7 @@ app.get("/urls/new", (req, res) => {
   templateVars = {
     username: req.cookies.username
   }
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -61,11 +63,19 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let oldShortUrl = req.params.id;
   let longUrl = urlDatabase[oldShortUrl];
-  let newShortUrl = generateRandomString(stringLength);
+  let newShortUrl = generateRandomString(randomStringLength);
 
   urlDatabase[newShortUrl] = longUrl;
   delete urlDatabase[oldShortUrl];
   res.redirect("/urls");
+});
+
+app.get("/register", (req, res) => {
+  res.render("/register");
+});
+
+app.post("/register", (req, res) => {
+  res.render("/register");
 });
 
 // Creates unsigned cookie with property "username" === their form input

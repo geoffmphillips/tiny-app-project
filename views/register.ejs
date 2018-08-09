@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/_head %>
+  </head>
+
+  <header>
+    <% include ./partials/_header %>
+  </header>
+
+  <body>
+    <form action="/register" method="POST">
+      <input type="email" name="email" placeholder="example@abc.xyz" style="width: 50px">
+      <input type="password" name="password" placeholder="********" style="width: 50px">
+      <input type="submit" value="Register">
+  </body>
+
+  <footer>
+    <a href="/urls">See full list of shortened URLs</a>
+    <% include ./partials/_footer %>
+  </footer>
+</html>
