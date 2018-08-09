@@ -1,52 +1,63 @@
 const express = require('express');
-const urlsRouter = new express.Router();
+const urlsRouter = express.Router();
+const generateRandomString = require('../modules/generateRandomString');
 
-let urlDatabase = {
+let urlDb = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+function shortUrlUpdater(needsUpdate) {
+  let oldShortUrl = needsUpdate;
+  let longUrl = urlDb[oldShortUrl];
+  let newShortUrl = generateRandomString(6);
+  urlDb[newShortUrl] = longUrl;
+  delete urlDb[oldShortUrl];
+};
+
+function urlDeleter(toDelete) {
+  delete urlDb[toDelete];
+}
 
 function httpChecker(http){
   return (http !== "http://");
 }
 
-urlsRouter
-  .get("/", (req, res) => {
-    res.render("urls_index");
-  });
-  .post("/", (req, res) => {
-    let newLongUrl = req.body.longUrl;
-    if (httpChecker(newLongUrl.slice(0, 7))) {
-      res.end("Please enter a url with 'http://' at the beginning.")
-    } else {
-    let newShortUrl = generateRandomString(6);
-    urlDatabase[newShortUrl] = newLongUrl;
+urlsRouter.get("/", (req, res) => {
+  res.render("urls_index", { urls: urlDb } );
+});
 
+urlsRouter.post("/", (req, res) => {
+  let newLongUrl = req.body.longUrl;
+  if (httpChecker(newLongUrl.slice(0, 7))) {
+    res.end("Please enter a url with 'http://' at the beginning.")
+  } else {
+    let newShortUrl = generateRandomString(6);
+    urlDb[newShortUrl] = newLongUrl;
     res.redirect(`/urls/${newShortUrl}`);
-    }
-  });
-  .get("/new", (req, res) => {
-    res.render("urls_new");
-  });
-  .get("/:id", (req, res) => {
-    res.render("urls_show");
-  });
-  .post("/:id", (req, res) => {
-    let oldShortUrl = req.params.id;
-    let longUrl = urlDatabase[oldShortUrl];
-    let newShortUrl = generateRandomString(6);
+  }
+});
 
-    urlDatabase[newShortUrl] = longUrl;
-    delete urlDatabase[oldShortUrl];
-    res.redirect("/urls");
-  });
-  // Deletes key-value pair from urlDatabase
-  .post("/:id/delete", (req, res) => {
-    let shortUrl = req.params.id;
-    delete urlDatabase[shortUrl];
-    res.redirect("/urls");
-  });
+urlsRouter.get("/new", (req, res) => {
+  res.render("urls_new");
+});
 
+urlsRouter.get("/:id", (req, res) => {
+  let url = {
+    shortUrl: req.params.id,
+    longUrl: urlDb[req.params.id]
+  }
+  res.render("urls_show", url);
+});
 
+urlsRouter.post("/:id", (req, res) => {
+  shortUrlUpdater(req.params.id);
+  res.redirect("/urls");
+});
+
+urlsRouter.post("/:id/delete", (req, res) => {
+  urlDeleter(req.params.id);
+  res.redirect("/urls");
+});
 
 module.exports = urlsRouter;

@@ -1,25 +1,26 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
-const PORT = 8080;
-const cookieSession = require('cookie-session');
-app.use(cookieParser());
-
 app.set("view engine", "ejs");
+
+const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: ['cucumber', 'sassafras', 'honeydew', 'dontNeedRealWOrdsHere'],
+  maxAge: 10 * 60 * 1000 // 10 minutes
+}))
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
 });
 
-
+const urlsRouter = require('./routes/urls');
+app.use('/urls', urlsRouter);
 
 app.get("/login", (req, res) => {
-  templateVars = {
-    users: users
-  }
-  res.render("login", templateVars);
+  res.render("login");
 });
 
 app.post("/login", (req, res) => {
@@ -86,4 +87,5 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+const PORT = 8080;
 app.listen(PORT);
