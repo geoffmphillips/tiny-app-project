@@ -15,6 +15,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {};
+
 const randonStringLength = 6;
 
 app.get("/", (req, res) => {
@@ -89,7 +91,17 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  res.render("urls_register");
+  let newIdKey = generateRandomString(randonStringLength);
+  res.cookie("user_id", newIdKey);
+  res.cookie("email", req.body.email);
+  res.cookie("password", req.body.password);
+  users.newIdKey = {
+    id: newIdKey,
+    email: req.body.email,
+    password: req.body.password
+  };
+  console.log(users);
+  res.redirect("/urls");
 });
 
 // Deletes key-value pair from urlDatabase
