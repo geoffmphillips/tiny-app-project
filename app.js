@@ -73,14 +73,23 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
-// Creates unsigned cookie with property "username" === their form input
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.name);
-  res.redirect("/login");
+  for (let user in users) {
+    if (users[user].email !== req.body.email) {
+      return res.status(403).end("Incorrect email.")
+    } else if (users[user].email === req.body.email && users[user].password === req.body.password) {
+      res.cookie("user_id", users[user].id);
+      res.cookie("email", users[user].email);
+      res.cookie("password", users[user].password);
+      res.redirect(301, "/");
+    } else {
+      return res.status(403).end("Email and password don't match.")
+    }
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -98,7 +107,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let newIdKey = generateRandomString(randonStringLength);
+  let newIdKey = generateRandomString(randomStringLength);
   res.cookie("user_id", newIdKey);
   res.cookie("email", req.body.email);
   res.cookie("password", req.body.password);
