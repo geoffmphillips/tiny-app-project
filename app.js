@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars =  {
     urls: urlDatabase,
-    username: req.cookies.username
+    users: users
    };
   res.render("urls_index", templateVars);
 });
@@ -44,7 +44,7 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   templateVars = {
-    username: req.cookies.username
+    users: users
   }
   res.render("urls_new");
 });
@@ -53,7 +53,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortUrl: req.params.id,
     longUrl: urlDatabase[req.params.id],
-    username: req.cookies.username
+    users: users
   };
 
   res.render("urls_show", templateVars);
@@ -71,9 +71,13 @@ app.post("/urls/:id", (req, res) => {
 });
 
 // Creates unsigned cookie with property "username" === their form input
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.name);
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.post("/logout", (req, res) => {
@@ -84,7 +88,7 @@ app.post("/logout", (req, res) => {
 app.get("/register", (req, res) => {
   let templateVars =  {
     urls: urlDatabase,
-    username: req.cookies.username
+    users: users
    };
 
   res.render("urls_register", templateVars);
