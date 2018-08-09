@@ -24,14 +24,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  console.log("REQ.COOKIES", req.cookies);
-  console.log("REQ.COOKIES.USER_ID", req.cookies.user_id);
   let templateVars =  {
     urls: urlDatabase,
     users: users[req.cookies.user_id].id
    };
-   console.log("USERS: ", users);
-   console.log("USERS.USER_ID: ", users[req.cookies.user_id].id);
   res.render("urls_index", templateVars);
 });
 
@@ -41,7 +37,6 @@ app.post("/urls", (req, res) => {
   if (httpChecker(newLongUrl.slice(0, 7), res)) {
     res.end("Please enter a url with 'http://' at the beginning.")
   } else {
-
   let newShortUrl = generateRandomString(randomStringLength);
   urlDatabase[newShortUrl] = newLongUrl;
 
@@ -155,6 +150,4 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}!`);
-});
+app.listen(PORT);
