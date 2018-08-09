@@ -95,12 +95,23 @@ app.post("/register", (req, res) => {
   res.cookie("user_id", newIdKey);
   res.cookie("email", req.body.email);
   res.cookie("password", req.body.password);
-  users.newIdKey = {
+
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).end("Please enter an email and password");
+  }
+
+  for (let user in users) {
+    if (users[user].email === req.body.email) {
+      return res.status(400).end("Email already in use.")
+    }
+  }
+
+  users[newIdKey] = {
     id: newIdKey,
     email: req.body.email,
     password: req.body.password
   };
-  console.log(users);
+
   res.redirect("/urls");
 });
 
