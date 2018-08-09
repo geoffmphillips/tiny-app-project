@@ -17,7 +17,7 @@ const urlDatabase = {
 
 const users = {};
 
-const randonStringLength = 6;
+const randomStringLength = 6;
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -34,12 +34,15 @@ app.get("/urls", (req, res) => {
 // Checks if user entered url beginning with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
   let newLongUrl = req.body.longUrl;
-  httpChecker(newLongUrl.slice(0, 7), res);
+  if (httpChecker(newLongUrl.slice(0, 7), res)) {
+    res.end("Please enter a url with 'http://' at the beginning.")
+  } else {
 
-  let newShortUrl = generateRandomString(randonStringLength);
+  let newShortUrl = generateRandomString(randomStringLength);
   urlDatabase[newShortUrl] = newLongUrl;
 
   res.redirect(`/urls/${newShortUrl}`);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -63,7 +66,7 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let oldShortUrl = req.params.id;
   let longUrl = urlDatabase[oldShortUrl];
-  let newShortUrl = generateRandomString(stringLength);
+  let newShortUrl = generateRandomString(randomStringLength);
 
   urlDatabase[newShortUrl] = longUrl;
   delete urlDatabase[oldShortUrl];

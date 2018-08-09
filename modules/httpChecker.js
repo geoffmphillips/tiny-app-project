@@ -1,7 +1,5 @@
 function httpChecker(http, response) {
-  if (http !== "http://") {
-    return response.end("Please enter a url starting with 'http://'.");
-  }
+    return (http !== "http://");
 }
 
 module.exports = httpChecker;
