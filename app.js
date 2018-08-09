@@ -40,12 +40,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  if(req.cookie) {
+  if(req.cookies !== {}) {
     let templateVars = {
-      users: userDb[req.cookie.user_id]
+      users: userDb[req.cookies.user_id]
     };
+    res.render("login", templateVars);
   } else {
-  res.render("login", { users: "" });
+    res.render("login", { users: "" });
   }
 });
 
