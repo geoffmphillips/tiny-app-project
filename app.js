@@ -8,16 +8,31 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
-  keys: ['cucumber', 'sassafras', 'honeydew', 'dontNeedRealWOrdsHere'],
+  keys: ['cucumber', 'sassafras', 'honeydew', 'dolphin','dontNeedRealWordsHere'],
   maxAge: 10 * 60 * 1000 // 10 minutes
 }))
+
+var bcrypt = require('bcrypt');
+
+const urlsRouter = require('./routes/urls');
+app.use('/urls', urlsRouter);
+
+const generateRandomString = require('generateRandomString');
+
+function createNewUser(email, password) {
+  const newIdKey = generateRandomString(6);
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  users[newIdKey] = {
+    id: newIdKey,
+    email: email,
+    password: hashedPassword
+  };
+}
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
 });
-
-const urlsRouter = require('./routes/urls');
-app.use('/urls', urlsRouter);
 
 app.get("/login", (req, res) => {
   res.render("login");
@@ -55,31 +70,30 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let newIdKey = generateRandomString(randomStringLength);
-  res.cookie("user_id", newIdKey);
-  res.cookie("email", req.body.email);
-  res.cookie("password", req.body.password);
-  if (!req.body.email || !req.body.password) {
+  const {email, password} = req.body;
+
+  if (!email || !password) {
     return res.status(400).end("Please enter an email and password");
   }
 
   for (let user in users) {
-    if (users[user].email === req.body.email) {
-      return res.status(400).end("Email already in use.")
+    if (users[user].email === email) {
+      return res.status(400).end("Email already in use")
     }
   }
 
-  users[newIdKey] = {
-    id: newIdKey,
-    email: req.body.email,
-    password: req.body.password
-  };
+  res.cookie("user_id", newIdKey);
+  res.cookie("email", req.body.email);
+  res.cookie("password", req.body.password);
+
+  createNewUser(req.body.email, req.body.password);
 
   res.redirect("/urls");
 });
 
 app.get("/u/:shortUrl", (req, res) => {
   let longUrl = urlDatabase[req.params.shortUrl];
+  req.session.views = (req.session.views || 0) + 1
   res.redirect(longUrl);
 });
 

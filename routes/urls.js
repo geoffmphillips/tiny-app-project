@@ -30,7 +30,7 @@ urlsRouter.get("/", (req, res) => {
 urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
-    res.end("Please enter a url with 'http://' at the beginning.")
+    newLongUrl = `http://${newLongUrl}`;
   } else {
     let newShortUrl = generateRandomString(6);
     urlDb[newShortUrl] = newLongUrl;
