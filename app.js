@@ -24,10 +24,14 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  console.log("REQ.COOKIES", req.cookies);
+  console.log("REQ.COOKIES.USER_ID", req.cookies.user_id);
   let templateVars =  {
     urls: urlDatabase,
-    users: users
+    users: users[req.cookies.user_id].id
    };
+   console.log("USERS: ", users);
+   console.log("USERS.USER_ID: ", users[req.cookies.user_id].id);
   res.render("urls_index", templateVars);
 });
 
@@ -49,7 +53,7 @@ app.get("/urls/new", (req, res) => {
   templateVars = {
     users: users
   }
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -74,7 +78,10 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  templateVars = {
+    users: users
+  }
+  res.render("login", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -93,7 +100,9 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
+  res.clearCookie('email');
+  res.clearCookie('password');
   res.redirect("/urls");
 });
 
@@ -111,7 +120,6 @@ app.post("/register", (req, res) => {
   res.cookie("user_id", newIdKey);
   res.cookie("email", req.body.email);
   res.cookie("password", req.body.password);
-
   if (!req.body.email || !req.body.password) {
     return res.status(400).end("Please enter an email and password");
   }
