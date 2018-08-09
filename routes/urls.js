@@ -19,6 +19,12 @@ function urlDeleter(toDelete) {
   delete urlDb[toDelete];
 }
 
+function urlCreator(url, response) {
+  let newShortUrl = generateRandomString(6);
+  urlDb[newShortUrl] = url;
+  return response.redirect(`/urls/${newShortUrl}`);
+};
+
 function httpChecker(http){
   return (http !== "http://");
 }
@@ -31,10 +37,9 @@ urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
     newLongUrl = `http://${newLongUrl}`;
+    urlCreator(newLongUrl, res);
   } else {
-    let newShortUrl = generateRandomString(6);
-    urlDb[newShortUrl] = newLongUrl;
-    res.redirect(`/urls/${newShortUrl}`);
+    urlCreator(newLongUrl, res);
   }
 });
 
@@ -58,6 +63,15 @@ urlsRouter.post("/:id", (req, res) => {
 urlsRouter.post("/:id/delete", (req, res) => {
   urlDeleter(req.params.id);
   res.redirect("/urls");
+});
+
+urlsRouter.get("../u/:shortUrl", (req, res) => {
+  let longUrl = urlDb[req.params.shortUrl];
+  res.redirect(longUrl);
+});
+
+urlsRouter.get(".json", (req, res) => {
+  res.json(urlDb);
 });
 
 module.exports = urlsRouter;
