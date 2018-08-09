@@ -74,6 +74,11 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect("/urls");
+});
+
 // Deletes key-value pair from urlDatabase
 app.post("/urls/:id/delete", (req, res) => {
   let shortUrl = req.params.id;
