@@ -15,7 +15,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const randomStringLength = 6;
+const randonStringLength = 6;
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -31,12 +31,11 @@ app.get("/urls", (req, res) => {
 
 // Checks if user entered url beginning with http://, creates new shortUrl, adds key-value pair to urlDatabase, and redirects to new page
 app.post("/urls", (req, res) => {
-  if (req.body.longUrl.slice(0, 7) !== "http://") {
-    return res.end("Please enter a url starting with 'http://'.");
-  }
+  let newLongUrl = req.body.longUrl;
+  httpChecker(newLongUrl.slice(0, 7), res);
 
-  let newShortUrl = generateRandomString(randomStringLength);
-  urlDatabase[newShortUrl] = req.body.longUrl;
+  let newShortUrl = generateRandomString(randonStringLength);
+  urlDatabase[newShortUrl] = newLongUrl;
 
   res.redirect(`/urls/${newShortUrl}`);
 });
@@ -45,7 +44,7 @@ app.get("/urls/new", (req, res) => {
   templateVars = {
     username: req.cookies.username
   }
-  res.render("urls_new", templateVars);
+  res.render("urls_new");
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -62,19 +61,11 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let oldShortUrl = req.params.id;
   let longUrl = urlDatabase[oldShortUrl];
-  let newShortUrl = generateRandomString(randomStringLength);
+  let newShortUrl = generateRandomString(stringLength);
 
   urlDatabase[newShortUrl] = longUrl;
   delete urlDatabase[oldShortUrl];
   res.redirect("/urls");
-});
-
-app.get("/register", (req, res) => {
-  res.render("urls_register");
-});
-
-app.post("/register", (req, res) => {
-  res.render("urls_register");
 });
 
 // Creates unsigned cookie with property "username" === their form input
@@ -86,6 +77,19 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
+});
+
+app.get("/register", (req, res) => {
+  let templateVars =  {
+    urls: urlDatabase,
+    username: req.cookies.username
+   };
+
+  res.render("urls_register", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  res.render("urls_register");
 });
 
 // Deletes key-value pair from urlDatabase
