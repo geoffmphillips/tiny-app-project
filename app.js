@@ -15,52 +15,48 @@ app.use(cookieParser());
 //   maxAge: 10 * 60 * 1000 // 10 minutes
 // }))
 
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 const urlsRouter = require('./routes/urls');
 app.use('/urls', urlsRouter);
 
+const users = require('./users');
+const userDb = users.userDb;
 const generateRandomString = require('./modules/generateRandomString');
 
-function createNewUser(email, password) {
-  const newIdKey = generateRandomString(6);
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
-  userDb[newIdKey] = {
-    id: newIdKey,
-    email: email,
-    password: hashedPassword
-  };
-}
-
-const userDb = {};
-
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  if(req.cookies.user_id) {
+    let templateVars = {
+      users: userDb[req.cookies.user_id]
+    };
+    res.redirect("/urls");
+  } else {
+    res.redirect("/urls");
+  }
 });
 
 app.get("/login", (req, res) => {
-  if(req.cookies !== {}) {
+  if(req.cookies.user_id) {
     let templateVars = {
       users: userDb[req.cookies.user_id]
     };
     res.render("login", templateVars);
   } else {
-    res.render("login", { users: "" });
+    res.render("login", { users: ''});
   }
 });
 
 app.post("/login", (req, res) => {
   for (let user in userDb) {
     if (userDb[user].email !== req.body.email) {
-      return res.status(403).end("Incorrect email.")
+      return res.status(403).end("Invalid credentials")
     } else if (userDb[user].email === req.body.email && bcrypt.compareSync(req.body.password, userDb[user].password)) {
       res.cookie("user_id", userDb[user].id);
       res.cookie("email", userDb[user].email);
       res.cookie("password", userDb[user].password);
       res.redirect(301, "/");
     } else {
-      return res.status(403).end("Email and password don't match.")
+      return res.status(403).end("Invalid credentials")
     }
   }
 });
@@ -88,8 +84,8 @@ app.post("/register", (req, res) => {
   }
   res.cookie("email", req.body.email);
   res.cookie("password", req.body.password);
-  createNewUser(req.body.email, req.body.password);
-  res.redirect("/urls");
+  users.createNewUser(req.body.email, req.body.password);
+  res.redirect("/login");
 });
 
 const PORT = 8080;

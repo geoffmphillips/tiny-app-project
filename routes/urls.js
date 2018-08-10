@@ -1,6 +1,8 @@
 const express = require('express');
 const urlsRouter = express.Router();
 const generateRandomString = require('../modules/generateRandomString');
+const users = require('../users');
+const userDb = users.userDb;
 
 let urlDb = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -30,8 +32,13 @@ function httpChecker(http){
 }
 
 urlsRouter.get("/", (req, res) => {
-  res.render("urls_index", { urls: urlDb } );
+  let templateVars = {
+    urls: urlDb,
+    users: userDb
+  };
+  res.render("urls_index", templateVars);
 });
+
 
 urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
@@ -44,15 +51,16 @@ urlsRouter.post("/", (req, res) => {
 });
 
 urlsRouter.get("/new", (req, res) => {
-  res.render("urls_new");
+  res.render("urls_new", { users: userDb });
 });
 
 urlsRouter.get("/:id", (req, res) => {
-  let url = {
+  let templateVars = {
     shortUrl: req.params.id,
-    longUrl: urlDb[req.params.id]
+    longUrl: urlDb[req.params.id],
+    users: userDb[req.cookies.user_id]
   }
-  res.render("urls_show", url);
+  res.render("urls_show", templateVars);
 });
 
 urlsRouter.post("/:id", (req, res) => {

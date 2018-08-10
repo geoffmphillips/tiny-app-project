@@ -1,13 +1,8 @@
-<header>
-
   <h3><strong>Sterns & Caulfield</strong> - <em>Affordable luxury URL Shortening</em></h3>
-
-  <nav class="nav">
-    <ul>
-      <li><a href="../register">Register</a></li>
-
-      <li><a href="../login">Login</a></li>
-    </ul>
-  </nav>
-
-</header>
+    <% if (!users) { %>
+      <p>Welcome, please <a href="/login">login</a></p>
+    <% } else { %>
+      <form action="/logout" method="POST">
+      <%= users.email %><input type="submit" value="Logout">
+      </form>
+    <% } %>
