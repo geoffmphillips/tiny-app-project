@@ -5,15 +5,12 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
-// const cookieSession = require('cookie-session');
-// app.use(cookieSession({
-//   name: 'session',
-//   keys: ['cucumber', 'sassafras', 'honeydew', 'dolphin','dontNeedRealWordsHere'],
-//   maxAge: 10 * 60 * 1000 // 10 minutes
-// }))
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: ['cucumber', 'sassafras', 'honeydew', 'dolphin','dontNeedRealWordsHere'],
+  maxAge: 10 * 60 * 1000 // 10 minutes
+}))
 
 const bcrypt = require('bcrypt');
 
@@ -29,9 +26,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  if(req.cookies.user_id) {
+  if(req.session.user_id) {
     let templateVars = {
-      users: userDb[req.cookies.user_id]
+      users: userDb[req.session.user_id]
     };
     res.render("login", templateVars);
   } else {
@@ -44,9 +41,9 @@ app.post("/login", (req, res, next) => {
     if (userDb[user].email !== req.body.email) {
       return res.status(403).end("Invalid credentials")
     } else if (userDb[user].email === req.body.email && bcrypt.compareSync(req.body.password, userDb[user].password)) {
-      res.cookie("user_id", userDb[user].id);
-      res.cookie("email", userDb[user].email);
-      res.cookie("password", userDb[user].password);
+      req.session.user_id = userDb[user].id;
+      req.session.email = userDb[user].email;
+      req.session.password = userDb[user].password;
       res.redirect(301, "/urls");
     } else {
       return res.status(403).end("Invalid credentials")
@@ -55,14 +52,12 @@ app.post("/login", (req, res, next) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
-  res.clearCookie('email');
-  res.clearCookie('password');
+  req.session = null;
   res.redirect("/urls");
 });
 
 app.get("/register", (req, res) => {
-  if (req.cookies.user_id) {
+  if (req.session.user_id) {
     let templateVars = {
       users: userDb
     };
@@ -82,8 +77,8 @@ app.post("/register", (req, res) => {
       return res.status(400).end("Email already in use")
     }
   }
-  res.cookie("email", req.body.email);
-  res.cookie("password", req.body.password);
+  req.session.email = req.body.email;
+  req.session.password = req.body.password;
   users.createNewUser(req.body.email, req.body.password);
   res.redirect("/login");
 });

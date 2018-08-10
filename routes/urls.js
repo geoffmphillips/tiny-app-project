@@ -36,10 +36,10 @@ function httpChecker(http){
 }
 
 urlsRouter.get("/", (req, res) => {
-  if (req.cookies.user_id) {
+  if (req.session.user_id) {
     let templateVars = {
       urls: urlDb,
-      users: userDb[req.cookies.user_id]
+      users: userDb[req.session.user_id]
     };
     res.render("urls_index", templateVars);
   } else {
@@ -50,19 +50,18 @@ urlsRouter.get("/", (req, res) => {
   }
 });
 
-
 urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
     newLongUrl = `http://${newLongUrl}`;
-    urlCreator(newLongUrl, req.cookies.user_id, res);
+    urlCreator(newLongUrl, req.session.user_id, res);
   } else {
-    urlCreator(newLongUrl, req.cookies.user_id, res);
+    urlCreator(newLongUrl, req.session.user_id, res);
   }
 });
 
 urlsRouter.get("/new", (req, res) => {
-  if (req.cookies.user_id) {
+  if (req.session.user_id) {
     res.render("urls_new", { users: userDb });
   } else {
     res.redirect('../login');
@@ -70,11 +69,11 @@ urlsRouter.get("/new", (req, res) => {
 });
 
 urlsRouter.get("/:id", (req, res) => {
-  if (req.cookies.user_id) {
+  if (req.session.user_id) {
     let templateVars = {
       shortUrl: req.params.id,
       longUrl: urlDb[req.params.id].longUrl,
-      users: userDb[req.cookies.user_id]
+      users: userDb[req.session.user_id]
     }
     res.render("urls_show", templateVars);
   } else {
@@ -83,7 +82,7 @@ urlsRouter.get("/:id", (req, res) => {
 });
 
 urlsRouter.post("/:id", (req, res) => {
-  shortUrlUpdater(req.params.id, req.cookies.user_id);
+  shortUrlUpdater(req.params.id, req.session.user_id);
   res.redirect("/urls");
 });
 
