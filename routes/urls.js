@@ -1,30 +1,19 @@
 const express = require('express');
 const urlsRouter = express.Router();
 const generateRandomString = require('../modules/generateRandomString');
-const users = require('../users');
+const users = require('../db/users');
 const userDb = users.userDb;
 
-const urlDb = {
-  "b2xVn2": {
-    id: "b2xVn2",
-    longUrl: "http://www.lighthouselabs.ca",
-    user: "id",
-    views: 0
-  },
-  "9sm5xK": {
-    id: "9sm5xK",
-    longUrl: "http://www.google.com",
-    user: "id",
-    views: 0
-  }
-};
+const urlDb = {};
 
 function shortUrlUpdater(needsUpdate, userId) {
   let longUrl = urlDb[needsUpdate].longUrl;
   let newShortUrl = generateRandomString(6);
-  urlDb[newShortUrl].id = newShortUrl;
-  urlDb[newShortUrl].longUrl = longUrl;
-  urlDb[newShortUrl].user = userId;
+  urlDb[newShortUrl] = {
+    id: newShortUrl,
+    longUrl: longUrl,
+    user: userId
+  };
   delete urlDb[needsUpdate];
 };
 
@@ -66,7 +55,7 @@ urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
     newLongUrl = `http://${newLongUrl}`;
-    urlCreator(newLongUrl, res);
+    urlCreator(newLongUrl, req.cookies.user_id, res);
   } else {
     urlCreator(newLongUrl, req.cookies.user_id, res);
   }
@@ -94,18 +83,13 @@ urlsRouter.get("/:id", (req, res) => {
 });
 
 urlsRouter.post("/:id", (req, res) => {
-  shortUrlUpdater(req.params.id);
+  shortUrlUpdater(req.params.id, req.cookies.user_id);
   res.redirect("/urls");
 });
 
 urlsRouter.post("/:id/delete", (req, res) => {
   urlDeleter(req.params.id);
   res.redirect("/urls");
-});
-
-urlsRouter.get("../u/:shortUrl", (req, res) => {
-  let longUrl = urlDb[req.params.shortUrl];
-  res.redirect(longUrl);
 });
 
 urlsRouter.get(".json", (req, res) => {

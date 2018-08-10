@@ -1,4 +1,4 @@
-const generateRandomString = require('./modules/generateRandomString');
+const generateRandomString = require('../modules/generateRandomString');
 const bcrypt = require('bcrypt');
 
 module.exports = {

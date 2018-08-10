@@ -20,9 +20,9 @@ const bcrypt = require('bcrypt');
 const urlsRouter = require('./routes/urls');
 app.use('/urls', urlsRouter);
 
-const users = require('./users');
+// Importing users database
+const users = require('./db/users');
 const userDb = users.userDb;
-const generateRandomString = require('./modules/generateRandomString');
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -86,6 +86,12 @@ app.post("/register", (req, res) => {
   res.cookie("password", req.body.password);
   users.createNewUser(req.body.email, req.body.password);
   res.redirect("/login");
+});
+
+app.get("/u/:shortUrl", (req, res) => {
+  console.log(urlDb[req.params.shortUrl].longUrl);
+  let longUrl = urlDb[req.params.shortUrl].longUrl;
+  res.redirect(longUrl);
 });
 
 const PORT = 8080;
