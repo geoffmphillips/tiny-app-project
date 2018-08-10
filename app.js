@@ -36,6 +36,7 @@ function emailChecker(usersDatabase, userEmail) {
   return false;
 }
 
+// Redirects to login page if not logged in. Redirects to /urls if logged in
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     res.redirect("/urls");
@@ -44,6 +45,7 @@ app.get("/", (req, res) => {
   }
 });
 
+// If logged in, allows users to logout. Else asks users to log in
 app.get("/login", (req, res) => {
   const message = req.session.errMessage || "";
   if(req.session.user_id) {
@@ -61,6 +63,7 @@ app.get("/login", (req, res) => {
   }
 });
 
+// Compares email and password entered to database. If matches, logs in and redirects. Else redirects with error message
 app.post("/login", (req, res, next) => {
   if (userDb !== {}) {
     for (let user in userDb) {
@@ -84,18 +87,19 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const regMessage = req.session.regErrMessage || '';
+  const regMessage = req.session.regErrMessage || "";
   if (req.session.user_id) {
     res.redirect('/urls');
   } else {
     templateVars = {
-      users: '',
+      users: "",
       message: regMessage
     }
     res.render("urls_register", templateVars);
   }
 });
 
+// Displays errors if invalid registration. Else redirects user to log in page
 app.post("/register", (req, res) => {
   const {email, password} = req.body;
   if (!email || !password) {
@@ -110,8 +114,10 @@ app.post("/register", (req, res) => {
   }
 });
 
+// Redirects externally to long URL. Updates database analytics
 app.get("/u/:shortUrl", (req, res) => {
-  
+  req.session.errMessage = "No short URL, can't redirect"
+  urlDb[req.params.shortUrl].views++;
   let longUrl = urlDb[req.params.shortUrl].longUrl;
   res.redirect(longUrl);
 });

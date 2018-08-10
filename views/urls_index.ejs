@@ -9,12 +9,15 @@
   </header>
     <% if (!users) { %>
     <body>
-      <h3><em>You must be logged in to view your. Click the link above to log in.</em></h3>
+      <h3><em>You must be logged in to view your artisanal short URLs. Click the link above to log in.</em></h3>
     </body>
     <% } else { %>
   <body style="font-size:20px; padding:50px;">
     <ul>
       <table>
+        <% if(message) { %>
+          <h4 style="color: red;"><%= message %></h4>
+        <% } %>
         <% for (let url in urls) { %>
           <% if(urls[url].user === users.id) { %>
 
@@ -22,6 +25,8 @@
             <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <strong><%= urls[url].longUrl %></strong></td>
             <td><a href="/urls/<%= url %>/">Edit</a></td>
             <td><input type="submit" class="btn-danger" value="Delete"></td>
+            <td>Total views: <%= urls[url].views %></td>
+            <td>Unique Visits: <%= urls[url].uniqueVists %><td>
             </form>
           </tr>
           <% } %>

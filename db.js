@@ -16,21 +16,6 @@ module.exports = {
     };
   },
   urlDb: {},
-  shortUrlUpdater: function(needsUpdate, userId) {
-    let longUrl = this.urlDb[needsUpdate].longUrl;
-    let newShortUrl = generateRandomString(6);
-    this.urlDb[newShortUrl] = {
-      id: newShortUrl,
-      longUrl: longUrl,
-      user: userId,
-      views: this.urlDb[needsUpdate].views,
-      uniqueVists: this.urlDb[needsUpdate].uniqueVists
-    };
-    delete this.urlDb[needsUpdate];
-  },
-  urlDeleter: function(toDelete) {
-    delete this.urlDb[toDelete];
-  },
   urlCreator: function(url, userId, response) {
     let shortUrl = generateRandomString(6);
     this.urlDb[shortUrl] = {
@@ -41,5 +26,11 @@ module.exports = {
       uniqueVists: 0
     };
     return response.redirect(`/urls/${shortUrl}`);
+  },
+  urlUpdater: function(shortUrl, newLongUrl) {
+    this.urlDb[shortUrl].longUrl = newLongUrl;
+  },
+  urlDeleter: function(toDelete) {
+    delete this.urlDb[toDelete];
   }
 };

@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     <% include ./partials/_head %>
   </head>
-
   <header>
     <% include ./partials/_header %>
   </header>
     <body style="font-size:20px; padding:50px;">
-      <h4><%= shortUrl %> &rarr; </h4> <form action="/urls/<%= shortUrl %>" method="POST" style="margin:10px;"> <a href= <%= longUrl %> ><%= longUrl %> </a><input type="submit" value="Update">
+      <p><strong> <%= shortUrl %> </strong>&rarr; <%= longUrl %></p>
+      <p>Total views: <%= views %></p>
+      <p>Unique Visits: <%= uniqueVists %></p>
+      <form action="/urls/<%= shortUrl %>" method="POST" style="margin:10px;">
+        <label for="longUrl">Enter a URL:</label>
+        <input id="longUrl" type="text" name="longUrl" placeholder="http://" style="width: 300px">
+        <input type="submit" value="Update">
       </form>
     </body>
-
   <footer>
     <% include ./partials/_footer %>
   </footer>

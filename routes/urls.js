@@ -1,6 +1,8 @@
 const express = require('express');
 const urlsRouter = express.Router();
 const generateRandomString = require('../modules/generateRandomString');
+
+// Importing "database"
 const db = require('../db');
 const userDb = db.userDb;
 const urlDb = db.urlDb;
@@ -9,21 +11,25 @@ function httpChecker(http){
   return (http !== "http://");
 }
 
+// If logged in can view urls connected to account. Else shows error message
 urlsRouter.get("/", (req, res) => {
+  const message = req.session.errMessage || "";
   if (req.session.user_id) {
     let templateVars = {
       urls: urlDb,
-      users: userDb[req.session.user_id]
+      users: userDb[req.session.user_id],
+      message: message
     };
     res.render("urls_index", templateVars);
   } else {
     let templateVars = {
-      users: ''
+      users: ""
     };
     res.render("urls_index", templateVars);
   }
 });
 
+// Creates new urls. Adds "http://"" to start of url if necessary
 urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
@@ -34,7 +40,9 @@ urlsRouter.post("/", (req, res) => {
   }
 });
 
+// If logged in, allows user to create new urls and clears error message. Else redirects.
 urlsRouter.get("/new", (req, res) => {
+  req.session.errMessage = "";
   if (req.session.user_id) {
     res.render("urls_new", { users: userDb[req.session.user_id] });
   } else {
@@ -42,13 +50,24 @@ urlsRouter.get("/new", (req, res) => {
   }
 });
 
+// If short URL entered doesn't exist, gives different error messages if logged in or not. If exists and logged in, allows user to view their URL. Else redirects
 urlsRouter.get("/:id", (req, res) => {
-  if (req.session.user_id) {
+  if (!urlDb[req.params.id]) {
+    if(!req.session.user_id) {
+      req.session.errMessage = "Please log in to view urls";
+      res.redirect("../login");
+    } else {
+      req.session.errMessage = "Not a real short URL";
+      res.redirect("/");
+    }
+  } else if (req.session.user_id) {
     let templateVars = {
       shortUrl: req.params.id,
       longUrl: urlDb[req.params.id].longUrl,
+      views: urlDb[req.params.id].views,
+      uniqueVists: urlDb[req.params.id].uniqueVists,
       users: userDb[req.session.user_id]
-    }
+    };
     res.render("urls_show", templateVars);
   } else {
     res.redirect('../login');
@@ -56,7 +75,7 @@ urlsRouter.get("/:id", (req, res) => {
 });
 
 urlsRouter.post("/:id", (req, res) => {
-  db.shortUrlUpdater(req.params.id, req.session.user_id);
+  db.urlUpdater(req.params.id, req.body.longUrl);
   res.redirect("/urls");
 });
 
