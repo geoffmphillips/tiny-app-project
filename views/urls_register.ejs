@@ -7,8 +7,10 @@
   <header>
     <% include ./partials/_header %>
   </header>
-
   <body style="font-size:20px; padding:50px;">
+    <% if (message !== "") { %>
+      <h4 style="color: red;"><%= message %></h4>
+    <% } %>
     <form action="/register" method="POST">
       <input type="email" name="email" placeholder="example@abc.xyz" style="width: 300px">
       <input type="password" name="password" placeholder="********" style="width: 300px">

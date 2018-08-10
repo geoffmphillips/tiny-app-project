@@ -19,8 +19,8 @@
           <% if(urls[url].user === users.id) { %>
 
           <tr>
-            <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <%= urls[url].longUrl %></td>
-            <td><a href="/urls/<%= url %>/"><strong>Edit</strong></a></td>
+            <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <strong><%= urls[url].longUrl %></strong></td>
+            <td><a href="/urls/<%= url %>/">Edit</a></td>
             <td><input type="submit" class="btn-danger" value="Delete"></td>
             </form>
           </tr>

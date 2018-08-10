@@ -62,7 +62,7 @@ urlsRouter.post("/", (req, res) => {
 
 urlsRouter.get("/new", (req, res) => {
   if (req.session.user_id) {
-    res.render("urls_new", { users: userDb });
+    res.render("urls_new", { users: userDb[req.session.user_id] });
   } else {
     res.redirect('../login');
   }
