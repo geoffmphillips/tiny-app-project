@@ -4,27 +4,42 @@ const generateRandomString = require('../modules/generateRandomString');
 const users = require('../users');
 const userDb = users.userDb;
 
-let urlDb = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+const urlDb = {
+  "b2xVn2": {
+    id: "b2xVn2",
+    longUrl: "http://www.lighthouselabs.ca",
+    user: "id",
+    views: 0
+  },
+  "9sm5xK": {
+    id: "9sm5xK",
+    longUrl: "http://www.google.com",
+    user: "id",
+    views: 0
+  }
 };
 
-function shortUrlUpdater(needsUpdate) {
-  let oldShortUrl = needsUpdate;
-  let longUrl = urlDb[oldShortUrl];
+function shortUrlUpdater(needsUpdate, userId) {
+  let longUrl = urlDb[needsUpdate].longUrl;
   let newShortUrl = generateRandomString(6);
-  urlDb[newShortUrl] = longUrl;
-  delete urlDb[oldShortUrl];
+  urlDb[newShortUrl].id = newShortUrl;
+  urlDb[newShortUrl].longUrl = longUrl;
+  urlDb[newShortUrl].user = userId;
+  delete urlDb[needsUpdate];
 };
 
 function urlDeleter(toDelete) {
   delete urlDb[toDelete];
 }
 
-function urlCreator(url, response) {
-  let newShortUrl = generateRandomString(6);
-  urlDb[newShortUrl] = url;
-  return response.redirect(`/urls/${newShortUrl}`);
+function urlCreator(url, userId, response) {
+  let shortUrl = generateRandomString(6);
+  urlDb[shortUrl] = {
+    id: shortUrl,
+    longUrl: url,
+    user: userId
+  };
+  return response.redirect(`/urls/${shortUrl}`);
 };
 
 function httpChecker(http){
@@ -35,14 +50,14 @@ urlsRouter.get("/", (req, res) => {
   if (req.cookies.user_id) {
     let templateVars = {
       urls: urlDb,
-      users: userDb
+      users: userDb[req.cookies.user_id]
     };
     res.render("urls_index", templateVars);
   } else {
     let templateVars = {
       users: ''
-    }
-    res.redirect("login");
+    };
+    res.render("urls_index", templateVars);
   }
 });
 
@@ -53,7 +68,7 @@ urlsRouter.post("/", (req, res) => {
     newLongUrl = `http://${newLongUrl}`;
     urlCreator(newLongUrl, res);
   } else {
-    urlCreator(newLongUrl, res);
+    urlCreator(newLongUrl, req.cookies.user_id, res);
   }
 });
 
@@ -69,7 +84,7 @@ urlsRouter.get("/:id", (req, res) => {
   if (req.cookies.user_id) {
     let templateVars = {
       shortUrl: req.params.id,
-      longUrl: urlDb[req.params.id],
+      longUrl: urlDb[req.params.id].longUrl,
       users: userDb[req.cookies.user_id]
     }
     res.render("urls_show", templateVars);

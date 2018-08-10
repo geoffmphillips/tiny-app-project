@@ -7,21 +7,31 @@
   <header>
     <% include ./partials/_header %>
   </header>
-
+    <% if (!users) { %>
+    <body>
+      <h3>Login <a href="/login">here</a> to view all of our luxury short URLs.</p>
+    </body>
+    <% } else { %>
   <body style="font-size:20px; padding:50px;">
     <ul>
       <table>
         <% for (let url in urls) { %>
+          <% console.log(urls[url].user) %>
+          <% console.log(users.id) %>
+          <% if(urls[url].user === users.id) { %>
+
           <tr>
-            <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <%= urls[url] %></td>
+            <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <%= urls[url].longUrl %></td>
             <td><a href="/urls/<%= url %>/"><strong>Edit</strong></a></td>
             <td><input type="submit" class="btn-danger" value="Delete"></td>
             </form>
           </tr>
+          <% } %>
         <% } %>
       </table>
     </ul>
   </body>
+  <% } %>
 
   <footer>
     <% include ./partials/_footer %>

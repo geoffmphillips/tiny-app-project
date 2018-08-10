@@ -8,11 +8,10 @@
   <header>
     <% include ./partials/_header %>
   </header>
-
-  <body style="font-size:20px; padding:50px;">
-    <h4><%= shortUrl %> &rarr; </h4> <form action="/urls/<%= shortUrl %>" method="POST" style="margin:10px;"> <a href= <%= longUrl %> ><%= longUrl %> </a><input type="submit" value="Update">
-    </form>
-  </body>
+    <body style="font-size:20px; padding:50px;">
+      <h4><%= shortUrl %> &rarr; </h4> <form action="/urls/<%= shortUrl %>" method="POST" style="margin:10px;"> <a href= <%= longUrl %> ><%= longUrl %> </a><input type="submit" value="Update">
+      </form>
+    </body>
 
   <footer>
     <% include ./partials/_footer %>
