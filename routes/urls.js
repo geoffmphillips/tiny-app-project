@@ -1,37 +1,9 @@
 const express = require('express');
 const urlsRouter = express.Router();
 const generateRandomString = require('../modules/generateRandomString');
-const users = require('../db/users');
-const userDb = users.userDb;
-
-const urlDb = {};
-
-function shortUrlUpdater(needsUpdate, userId) {
-  let longUrl = urlDb[needsUpdate].longUrl;
-  let newShortUrl = generateRandomString(6);
-  urlDb[newShortUrl] = {
-    id: newShortUrl,
-    longUrl: longUrl,
-    user: userId
-  };
-  delete urlDb[needsUpdate];
-};
-
-function urlDeleter(toDelete) {
-  delete urlDb[toDelete];
-}
-
-function urlCreator(url, userId, response) {
-  let shortUrl = generateRandomString(6);
-  urlDb[shortUrl] = {
-    id: shortUrl,
-    longUrl: url,
-    user: userId,
-    views: 0,
-    uniqueVists: 0
-  };
-  return response.redirect(`/urls/${shortUrl}`);
-};
+const db = require('../db');
+const userDb = db.userDb;
+const urlDb = db.urlDb;
 
 function httpChecker(http){
   return (http !== "http://");
@@ -56,9 +28,9 @@ urlsRouter.post("/", (req, res) => {
   let newLongUrl = req.body.longUrl;
   if (httpChecker(newLongUrl.slice(0, 7))) {
     newLongUrl = `http://${newLongUrl}`;
-    urlCreator(newLongUrl, req.session.user_id, res);
+    db.urlCreator(newLongUrl, req.session.user_id, res);
   } else {
-    urlCreator(newLongUrl, req.session.user_id, res);
+    db.urlCreator(newLongUrl, req.session.user_id, res);
   }
 });
 
@@ -84,12 +56,12 @@ urlsRouter.get("/:id", (req, res) => {
 });
 
 urlsRouter.post("/:id", (req, res) => {
-  shortUrlUpdater(req.params.id, req.session.user_id);
+  db.shortUrlUpdater(req.params.id, req.session.user_id);
   res.redirect("/urls");
 });
 
 urlsRouter.post("/:id/delete", (req, res) => {
-  urlDeleter(req.params.id);
+  db.urlDeleter(req.params.id);
   res.redirect("/urls");
 });
 

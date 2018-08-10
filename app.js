@@ -10,16 +10,17 @@ app.use(cookieSession({
   name: 'session',
   keys: ['cucumber', 'sassafras', 'honeydew', 'dolphin','dontNeedRealWordsHere'],
   maxAge: 10 * 60 * 1000 // 10 minutes
-}))
+}));
 
 const bcrypt = require('bcrypt');
 
 const urlsRouter = require('./routes/urls');
 app.use('/urls', urlsRouter);
 
-// Importing users database
-const users = require('./db/users');
-const userDb = users.userDb;
+// Importing "database"
+const db = require('./db');
+const userDb = db.userDb;
+const urlDb = db.urlDb;
 
 function badLogin(request, response) {
   request.session.errMessage = "Invalid login";
@@ -60,7 +61,6 @@ app.get("/login", (req, res) => {
   }
 });
 
-// If
 app.post("/login", (req, res, next) => {
   if (userDb !== {}) {
     for (let user in userDb) {
@@ -68,7 +68,7 @@ app.post("/login", (req, res, next) => {
         req.session.user_id = userDb[user].id;
         req.session.errMessage = "";
         req.session.regErrMessage = "";
-        res.redirect(301, "/urls");
+        res.redirect("/urls");
       } else {
         badLogin(req, res);
       }
@@ -105,13 +105,13 @@ app.post("/register", (req, res) => {
     req.session.regErrMessage = "Email already in use";
     res.redirect("/register");
   } else {
-    users.createNewUser(req.body.email, req.body.password);
+    db.createNewUser(req.body.email, req.body.password);
     res.redirect("/login");
   }
 });
 
 app.get("/u/:shortUrl", (req, res) => {
-  console.log(urlDb[req.params.shortUrl].longUrl);
+  
   let longUrl = urlDb[req.params.shortUrl].longUrl;
   res.redirect(longUrl);
 });
