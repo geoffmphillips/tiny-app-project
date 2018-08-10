@@ -26,7 +26,9 @@ function urlCreator(url, userId, response) {
   urlDb[shortUrl] = {
     id: shortUrl,
     longUrl: url,
-    user: userId
+    user: userId,
+    views: 0,
+    uniqueVists: 0
   };
   return response.redirect(`/urls/${shortUrl}`);
 };

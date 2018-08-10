@@ -1,6 +1,6 @@
   <h3><strong>Sterns & Caulfield</strong> - <em>Affordable luxury URL Shortening</em></h3>
     <% if (!users) { %>
-      <p>Welcome! Please login. Or <a href="/register">register</a> if you're new</p>
+      <p>Welcome! Please <a href="/login">login</a>. Or <a href="/register">register</a> if you're new</p>
     <% } else { %>
       <form action="/logout" method="POST">
       <%= users.email %><input type="submit" value="Logout">

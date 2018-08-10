@@ -36,7 +36,11 @@ function emailChecker(usersDatabase, userEmail) {
 }
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -61,6 +65,8 @@ app.post("/login", (req, res, next) => {
     for (let user in userDb) {
       if (userDb[user].email === req.body.email && bcrypt.compareSync(req.body.password, userDb[user].password)) {
         req.session.user_id = userDb[user].id;
+        req.session.errMessage = "";
+        req.session.regErrMessage = "";
         res.redirect(301, "/urls");
       } else {
         badLogin(req, res);

@@ -1,15 +1,16 @@
 {
-  "name": "using-express",
+  "name": "tiny-app-project",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Tiny app that creates shortened URLs",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "geoffmphillips",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.6.1",
