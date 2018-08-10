@@ -93,8 +93,4 @@ urlsRouter.post("/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-urlsRouter.get(".json", (req, res) => {
-  res.json(urlDb);
-});
-
 module.exports = urlsRouter;
