@@ -25,7 +25,11 @@ const userDb = users.userDb;
 const generateRandomString = require('./modules/generateRandomString');
 
 app.get("/", (req, res) => {
+  if (req.cookies.user_id) {
     res.redirect("/urls");
+  } else {
+    res.redirect("login");
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -35,11 +39,11 @@ app.get("/login", (req, res) => {
     };
     res.render("login", templateVars);
   } else {
-    res.render("login", { users: ''});
+    res.render("login", { users: '' });
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", (req, res, next) => {
   for (let user in userDb) {
     if (userDb[user].email !== req.body.email) {
       return res.status(403).end("Invalid credentials")
@@ -47,7 +51,7 @@ app.post("/login", (req, res) => {
       res.cookie("user_id", userDb[user].id);
       res.cookie("email", userDb[user].email);
       res.cookie("password", userDb[user].password);
-      res.redirect(301, "/");
+      res.redirect(301, "/urls");
     } else {
       return res.status(403).end("Invalid credentials")
     }
@@ -62,7 +66,15 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register", { users: userDb });
+  if (req.cookies.user_id) {
+    let templateVars = {
+      urls: urlDb,
+      users: userDb
+    };
+    res.render("urls_register", templateVars);
+  } else {
+    res.render("urls_register", { users: '' });
+  }
 });
 
 app.post("/register", (req, res) => {

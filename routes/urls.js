@@ -32,11 +32,18 @@ function httpChecker(http){
 }
 
 urlsRouter.get("/", (req, res) => {
-  let templateVars = {
-    urls: urlDb,
-    users: userDb
-  };
-  res.render("urls_index", templateVars);
+  if (req.cookies.user_id) {
+    let templateVars = {
+      urls: urlDb,
+      users: userDb
+    };
+    res.render("urls_index", templateVars);
+  } else {
+    let templateVars = {
+      users: ''
+    }
+    res.redirect("login");
+  }
 });
 
 
@@ -51,16 +58,24 @@ urlsRouter.post("/", (req, res) => {
 });
 
 urlsRouter.get("/new", (req, res) => {
-  res.render("urls_new", { users: userDb });
+  if (req.cookies.user_id) {
+    res.render("urls_new", { users: userDb });
+  } else {
+    res.redirect('../login');
+  }
 });
 
 urlsRouter.get("/:id", (req, res) => {
-  let templateVars = {
-    shortUrl: req.params.id,
-    longUrl: urlDb[req.params.id],
-    users: userDb[req.cookies.user_id]
+  if (req.cookies.user_id) {
+    let templateVars = {
+      shortUrl: req.params.id,
+      longUrl: urlDb[req.params.id],
+      users: userDb[req.cookies.user_id]
+    }
+    res.render("urls_show", templateVars);
+  } else {
+    res.redirect('../login');
   }
-  res.render("urls_show", templateVars);
 });
 
 urlsRouter.post("/:id", (req, res) => {
