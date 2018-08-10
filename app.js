@@ -25,14 +25,7 @@ const userDb = users.userDb;
 const generateRandomString = require('./modules/generateRandomString');
 
 app.get("/", (req, res) => {
-  if(req.cookies.user_id) {
-    let templateVars = {
-      users: userDb[req.cookies.user_id]
-    };
     res.redirect("/urls");
-  } else {
-    res.redirect("/urls");
-  }
 });
 
 app.get("/login", (req, res) => {
