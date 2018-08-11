@@ -31,12 +31,17 @@ urlsRouter.get("/", (req, res) => {
 
 // Creates new urls. Adds "http://"" to start of url if necessary
 urlsRouter.post("/", (req, res) => {
-  let newLongUrl = req.body.longUrl;
-  if (httpChecker(newLongUrl.slice(0, 7))) {
-    newLongUrl = `http://${newLongUrl}`;
-    db.urlCreator(newLongUrl, req.session.user_id, res);
+  if (!req.session.user_id) {
+    req.session.errMessage = "Please login to create short URLs";
+    res.redirect("../login");
   } else {
-    db.urlCreator(newLongUrl, req.session.user_id, res);
+    let newLongUrl = req.body.longUrl;
+    if (httpChecker(newLongUrl.slice(0, 7))) {
+      newLongUrl = `http://${newLongUrl}`;
+      db.urlCreator(newLongUrl, req.session.user_id, res);
+    } else {
+      db.urlCreator(newLongUrl, req.session.user_id, res);
+    }
   }
 });
 
@@ -61,14 +66,20 @@ urlsRouter.get("/:id", (req, res) => {
       res.redirect("/");
     }
   } else if (req.session.user_id) {
-    let templateVars = {
-      shortUrl: req.params.id,
-      longUrl: urlDb[req.params.id].longUrl,
-      views: urlDb[req.params.id].views,
-      uniqueVists: urlDb[req.params.id].uniqueVists,
-      users: userDb[req.session.user_id]
-    };
-    res.render("urls_show", templateVars);
+    // Checking to see if logged in user has access to the requested url. If yes, renders page. If not, redirects with error message
+    if (urlDb[req.params.id] && db.urlAccessChecker(req.session.user_id, req.params.id)) {
+      let templateVars = {
+        shortUrl: req.params.id,
+        longUrl: urlDb[req.params.id].longUrl,
+        views: urlDb[req.params.id].views,
+        uniqueVists: urlDb[req.params.id].uniqueVists,
+        users: userDb[req.session.user_id]
+      };
+      res.render("urls_show", templateVars);
+    } else {
+      req.session.errMessage = "You do not have permissions to view that page";
+      res.redirect("/");
+    }
   } else {
     res.redirect('../login');
   }

@@ -8,13 +8,12 @@
   </header>
     <body style="font-size:20px; padding:50px;">
       <p><strong> <%= shortUrl %> </strong>&rarr; <%= longUrl %></p>
-      <p>Total views: <%= views %></p>
-      <p>Unique Visits: <%= uniqueVists %></p>
       <form action="/urls/<%= shortUrl %>" method="POST" style="margin:10px;">
-        <label for="longUrl">Enter a URL:</label>
-        <input id="longUrl" type="text" name="longUrl" placeholder="http://" style="width: 300px">
+        <label for="longUrl">Enter a new URL:</label>
+        <input id="longUrl" type="text" name="longUrl" placeholder="<%= longUrl %>" style="width: 300px">
         <input type="submit" value="Update">
       </form>
+      <p>Total views: <%= views %></p>
     </body>
   <footer>
     <% include ./partials/_footer %>

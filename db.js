@@ -23,7 +23,6 @@ module.exports = {
       longUrl: url,
       user: userId,
       views: 0,
-      uniqueVists: 0
     };
     return response.redirect(`/urls/${shortUrl}`);
   },
@@ -32,5 +31,12 @@ module.exports = {
   },
   urlDeleter: function(toDelete) {
     delete this.urlDb[toDelete];
+  },
+  urlAccessChecker: function(userId, shortUrl) {
+    if (this.urlDb[shortUrl].user !== userId) {
+      return false;
+    } else {
+      return true;
+    };
   }
 };

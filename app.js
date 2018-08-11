@@ -63,19 +63,21 @@ app.get("/login", (req, res) => {
   }
 });
 
-// Compares email and password entered to database. If matches, logs in and redirects. Else redirects with error message
+// Compares email and password entered to database. If matches sets cookie and "grant ". Else redirects with error message
 app.post("/login", (req, res, next) => {
+  let grantAccess = false;
   if (userDb !== {}) {
     for (let user in userDb) {
       if (userDb[user].email === req.body.email && bcrypt.compareSync(req.body.password, userDb[user].password)) {
+        grantAccess = true;
         req.session.user_id = userDb[user].id;
-        req.session.errMessage = "";
-        req.session.regErrMessage = "";
-        res.redirect("/urls");
-      } else {
-        badLogin(req, res);
       }
     }
+  }
+  if (grantAccess) {
+    req.session.errMessage = "";
+    req.session.regErrMessage = "";
+    res.redirect("/urls");
   } else {
     badLogin(req, res);
   }
@@ -116,10 +118,14 @@ app.post("/register", (req, res) => {
 
 // Redirects externally to long URL. Updates database analytics
 app.get("/u/:shortUrl", (req, res) => {
-  req.session.errMessage = "No short URL, can't redirect"
-  urlDb[req.params.shortUrl].views++;
-  let longUrl = urlDb[req.params.shortUrl].longUrl;
-  res.redirect(longUrl);
+  if (!req.params.id) {
+    req.session.errMessage = "No short URL, can't redirect"
+    res.redirect("../login");
+  } else {
+    urlDb[req.params.shortUrl].views++;
+    let longUrl = urlDb[req.params.shortUrl].longUrl;
+    res.redirect(longUrl);
+  }
 });
 
 const PORT = 8080;
