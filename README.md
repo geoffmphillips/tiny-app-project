@@ -4,9 +4,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Creating a new short URL"](#)
-!["See how many times a short URL has been clicked"](#)
-!["View all shortened URLs associated with your account"](#)
+!["Creating a new short URL"](https://github.com/geoffmphillips/tiny-app-project/blob/master/docs/create-new-url.png?raw=true)
+!["See how many times a short URL has been clicked"](https://github.com/geoffmphillips/tiny-app-project/blob/master/docs/url-stats.png?raw=true)
+!["View all shortened URLs associated with your account"](https://github.com/geoffmphillips/tiny-app-project/blob/master/docs/all-urls.png?raw=true)
 
 ## Dependencies
 
