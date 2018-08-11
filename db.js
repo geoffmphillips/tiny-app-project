@@ -32,6 +32,16 @@ module.exports = {
   urlDeleter: function(toDelete) {
     delete this.urlDb[toDelete];
   },
+  urlChecker: function(shortUrl) {
+    let output = false;
+    for (let url in this.urlDb) {
+      if (this.urlDb[url].id === shortUrl) {
+        console.log(this.urlDb[url]);
+        output = true;
+      }
+    }
+    return output;
+  },
   urlAccessChecker: function(userId, shortUrl) {
     if (this.urlDb[shortUrl].user !== userId) {
       return false;

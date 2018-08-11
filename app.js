@@ -118,13 +118,13 @@ app.post("/register", (req, res) => {
 
 // Redirects externally to long URL. Updates database analytics
 app.get("/u/:shortUrl", (req, res) => {
-  if (!req.params.id) {
-    req.session.errMessage = "No short URL, can't redirect"
-    res.redirect("../login");
-  } else {
+  if (db.urlChecker(req.params.shortUrl)) {
     urlDb[req.params.shortUrl].views++;
     let longUrl = urlDb[req.params.shortUrl].longUrl;
     res.redirect(longUrl);
+  } else {
+    req.session.errMessage = "No short URL, can't redirect"
+    res.redirect("../login");
   }
 });
 
