@@ -4,7 +4,6 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Welcome message for new users"](#)
 !["Creating a new short URL"](#)
 !["See how many times a short URL has been clicked"](#)
 !["View all shortened URLs associated with your account"](#)
