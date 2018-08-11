@@ -36,7 +36,6 @@ module.exports = {
     let output = false;
     for (let url in this.urlDb) {
       if (this.urlDb[url].id === shortUrl) {
-        console.log(this.urlDb[url]);
         output = true;
       }
     }
