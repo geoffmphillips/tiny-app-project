@@ -1,8 +1,8 @@
-  <h3><strong>Geoff's Tiny App</strong> - <em>handcrafted URL shortening</em></h3>
-    <% if (!users) { %>
-      <p>Welcome! Please <a href="/login">login</a>. Or <a href="/register">register</a> if you're new</p>
-    <% } else { %>
-      <form action="/logout" method="POST">
-      <%= users.email %><input type="submit" value="Logout">
-      </form>
-    <% } %>
+<h3><strong>Geoff's Tiny App</strong> - <em>handcrafted URL shortening</em></h3>
+  <% if (!users) { %>
+    <p>Welcome! Please <a href="/login">login</a>. Or <a href="/register">register</a> if you're new</p>
+  <% } else { %>
+    <form action="/logout" method="POST">
+    <%= users.email %><input type="submit" value="Logout">
+    </form>
+  <% } %>

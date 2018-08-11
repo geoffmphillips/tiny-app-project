@@ -3,7 +3,6 @@
   <head>
     <% include ./partials/_head %>
   </head>
-
   <header>
     <% include ./partials/_header %>
   </header>
@@ -20,7 +19,6 @@
         <% } %>
         <% for (let url in urls) { %>
           <% if(urls[url].user === users.id) { %>
-
           <tr>
             <td><form method="POST" action="/urls/<%= url %>/delete"><%= url %> &rarr; <strong><%= urls[url].longUrl %></strong></td>
             <td><a href="/urls/<%= url %>/">Edit</a></td>
@@ -34,7 +32,6 @@
     </ul>
   </body>
   <% } %>
-
   <footer>
     <% include ./partials/_footer %>
   </footer>
