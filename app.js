@@ -47,6 +47,7 @@ app.get("/", (req, res) => {
 
 // If logged in, allows users to logout. Else asks users to log in
 app.get("/login", (req, res) => {
+  // Passes error message if it has been set
   const message = req.session.errMessage || "";
   if(req.session.user_id) {
     let templateVars = {
@@ -57,7 +58,7 @@ app.get("/login", (req, res) => {
   } else {
     let templateVars = {
       message: message,
-      users: ''
+      users: ""
     };
     res.render("login", templateVars);
   }
@@ -75,6 +76,7 @@ app.post("/login", (req, res, next) => {
     }
   }
   if (grantAccess) {
+    // Clears error messages before loggin in
     req.session.errMessage = "";
     req.session.regErrMessage = "";
     res.redirect("/urls");
